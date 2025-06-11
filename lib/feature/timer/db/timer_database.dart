@@ -68,13 +68,14 @@ class TimerDatabase {
     }
   }
 
-  Future<void> insertTimer(TimerModel timer) async {
+  Future<int> insertTimer(TimerModel timer) async {
     final db = await database;
-    await db.insert(
+    final id = await db.insert(
       'timers',
       timer.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    return id;
   }
 
   Future<void> deleteTimer(TimerModel timer) async {
@@ -89,11 +90,7 @@ class TimerDatabase {
   Future<List<TimerModel>> timersList() async {
     final db = await database;
     final List<Map<String, dynamic>> query = await db.query('timers');
-
     final timersList = query.map((map) => TimerModel.fromMap(map)).toList();
-    for (TimerModel timer in timersList) {
-      print(timer.toString());
-    }
     return timersList;
   }
 }

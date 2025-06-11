@@ -21,12 +21,11 @@ class TimerRunPage extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                timer.formattedTime,
+                'Таймер',
                 style: TextStyle(fontSize: 50),
                   )
                 ),
                 FloatingActionButton(onPressed: () => ' ', child: Icon(Icons.pause),)
-
             ],
             );
           }
