@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_timer_app/feature/timer/bloc/timer/timer_bloc.dart';
+import 'package:flutter_timer_app/feature/timer/repository/timer_present_repository.dart';
 import 'package:flutter_timer_app/feature/timer/timers_list_notifier.dart';
 import 'package:flutter_timer_app/feature/timer/view/timer_add_page/timer_add_page.dart';
+import 'package:flutter_timer_app/feature/timer/view/timer_add_page/widget/timer_creation_view.dart';
 
-import 'package:flutter_timer_app/feature/timer/view/timer_list_page/widget/timer_scope.dart';
+
 
 class TimerListPage extends StatefulWidget {
   const TimerListPage({super.key});
@@ -16,8 +18,10 @@ class TimerListPage extends StatefulWidget {
 class _TimerListPageState extends State<TimerListPage> {
   @override
   void initState() {
+    
     super.initState();
-    context.read<TimersListNotifier>().loadTimers();
+    context.read<TimerPresentRepository>().loadTimers();
+    
   }
 
   @override
@@ -46,38 +50,44 @@ class _TimerListPageState extends State<TimerListPage> {
             ),
           ],
         ),
-        body: ListenableBuilder(
-            listenable: timersNotifier,
-            builder: (context, child) {
-              final timers = timersNotifier.timersList;
-              return ListView.builder(
-                itemCount: timers.length,
-                itemBuilder: (context, index) {
-                  final timer = timers[index];
-                  return Dismissible(
-                    key: ValueKey(timer.id),
-                    onDismissed: (direction) {
-                      context.read<TimersListNotifier>().removeTimer(timer);
-                    },
-                    child: TimerScope(
-                      key: ValueKey(timer.id),
-                      timer: timer,
-                      child: BlocBuilder<TimerBloc, TimerState>(
-                        builder: (context, state) {
-                          if (state is! TimerRunComplete) {
-                            final h = state.duration ~/ 3600;
-                            final m = (state.duration % 3600) ~/ 60;
-                            final s = state.duration % 60;
-                            return TimerListTile(hours: h, mins: m, secs: s);
-                          }
-                          return const SizedBox.shrink();
+        body: Column(
+          children: [
+            TimerCreationView(onTimeChanged: onTimeChanged),
+            ListenableBuilder(
+                listenable: timersNotifier,
+                builder: (context, child) {
+                  final timers = timersNotifier.timersList;
+                  return ListView.builder(
+                    itemCount: timers.length,
+                    itemBuilder: (context, index) {              
+                      final timer = timers[index];
+                      final bloc = context.read<TimerPresentRepository>().getBloc(timer);
+                      return Dismissible(
+                        key: ValueKey(timer.id),
+                        onDismissed: (direction) {
+                          context.read<TimerPresentRepository>().removeTimer(timer);
                         },
-                    )
-                    ),
+                        child:BlocProvider.value(
+                          value: bloc,
+                          child:BlocBuilder<TimerBloc, TimerState>(
+                              builder: (context, state) {
+                              if (state is! TimerRunComplete) {
+                                final h = state.duration ~/ 3600;
+                                final m = (state.duration % 3600) ~/ 60;
+                                final s = state.duration % 60;
+                                return TimerListTile(hours: h, mins: m, secs: s);
+                              }
+                              return const SizedBox.shrink();
+                            },
+                        ),     
+                          ),
+                 
+                      );
+                    },
                   );
-                },
-              );
-            }));
+                }),
+          ],
+        ));
   }
 }
 

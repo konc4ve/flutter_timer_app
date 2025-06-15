@@ -26,7 +26,7 @@ class TimerDatabase {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -35,7 +35,7 @@ class TimerDatabase {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE timers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY,
         duration INTEGER,
         label TEXT,
         createdAt TEXT
@@ -44,30 +44,31 @@ class TimerDatabase {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
-      // Создание новой таблицы без isRunning и с duration
-      await db.execute('''
-        CREATE TABLE timers_new (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          duration INTEGER,
-          label TEXT,
-          createdAt TEXT
-        )
-      ''');
+  if (oldVersion < 4) { // повышаем версию до 4
+    await db.execute('''
+      CREATE TABLE timers_new (
+        id TEXT PRIMARY KEY,
+        duration INTEGER,
+        label TEXT,
+        createdAt TEXT
+      )
+    ''');
 
-      // Переносим данные из старой таблицы в новую
-      await db.execute('''
-        INSERT INTO timers_new (id, duration, label, createdAt)
-        SELECT id, duration, label, createdAt
-        FROM timers
-      ''');
-
-      // Удаляем старую таблицу и переименовываем новую
-      await db.execute('DROP TABLE timers');
-      await db.execute('ALTER TABLE timers_new RENAME TO timers');
+    // Переносим и конвертируем id в TEXT
+    final oldTimers = await db.query('timers');
+    for (final timer in oldTimers) {
+      await db.insert('timers_new', {
+        'id': timer['id'].toString(),
+        'duration': timer['duration'],
+        'label': timer['label'],
+        'createdAt': timer['createdAt'],
+      });
     }
-  }
 
+    await db.execute('DROP TABLE timers');
+    await db.execute('ALTER TABLE timers_new RENAME TO timers');
+  }
+}
   Future<int> insertTimer(TimerModel timer) async {
     final db = await database;
     final id = await db.insert(

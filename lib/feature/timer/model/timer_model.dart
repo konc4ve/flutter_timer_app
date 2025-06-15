@@ -1,11 +1,11 @@
 class TimerModel {
-  final int? id;
+  final String id;
   final int duration;
   final String label;
   final DateTime createdAt;
 
   TimerModel({
-    this.id,
+    required this.id,
     required this.duration,
     this.label = 'Таймер',
     required this.createdAt
@@ -14,6 +14,7 @@ class TimerModel {
 
   Map<String, Object?> toMap(){
     return {
+      'id':id,
       'duration': duration,
       'label': label,
       'createdAt': createdAt.toIso8601String(),
@@ -22,7 +23,7 @@ class TimerModel {
 
   factory TimerModel.fromMap(Map<String, dynamic> map) {
   return TimerModel(
-    id: map['id'] as int,
+    id: map['id'].toString(),
     duration : map['duration'] as int,
     label: map['label'] as String,
     createdAt: DateTime.parse(map['createdAt'] as String), // ISO8601
