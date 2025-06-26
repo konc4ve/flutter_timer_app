@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_timer_app/feature/timer/model/timer_model.dart';
 
 
-class TimersListNotifier extends ChangeNotifier {
 
-  final List<TimerModel> _timersList = [];
+class TimerRecentListNotifier extends ChangeNotifier {
+  final List<TimerModel> _timersRecentList = [];
 
 
 
-  List<TimerModel> get timersList => _timersList;
+  List<TimerModel> get timersList => _timersRecentList;
+  
   Future<void> addTimer (TimerModel timer) async {
-    _timersList.add(timer);
+    _timersRecentList.add(timer);
     notifyListeners();
   }
 
   Future<void> removeTimer(TimerModel timer) async {
     try {
-      _timersList.removeWhere((t) => t.id == timer.id);
+      _timersRecentList.removeWhere((t) => t.id == timer.id);
       notifyListeners();
     } catch (e) {
       debugPrint('Ошибка при удалении таймера: $e');
@@ -25,7 +26,7 @@ class TimersListNotifier extends ChangeNotifier {
   }
 
   void setTimers(List<TimerModel> timers) {
-    _timersList
+    _timersRecentList
       ..clear()
       ..addAll(timers);
     notifyListeners(); 

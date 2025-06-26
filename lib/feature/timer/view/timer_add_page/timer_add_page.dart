@@ -1,47 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_timer_app/feature/timer/model/timer_model.dart';
-import 'package:flutter_timer_app/feature/timer/repository/timer_present_repository.dart';
-import 'package:flutter_timer_app/feature/timer/view/timer_add_page/widget/timer_creation_view.dart';
-import 'package:uuid/uuid.dart';
+import 'package:flutter_timer_app/feature/timer/repository/timer_manager.dart';
+import 'package:flutter_timer_app/feature/timer/timer_editor_model.dart';
+import 'package:flutter_timer_app/feature/timer/view/widget/timer_configuration_panel/timer_configuration_panel.dart';
+import 'package:flutter_timer_app/feature/timer/view/widget/timer_wheel_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 
-class TimerAddPage extends StatefulWidget {
-  const TimerAddPage({super.key});
-
-  @override
-  State<TimerAddPage> createState() => _TimerAddPageState();
-}
-
-class _TimerAddPageState extends State<TimerAddPage> {
-  int duration = 0;
-  
-  void _onTimeChanged(int h, int m, int s) {
-    setState(() {
-      duration = h * 3600 + m * 60 + s;
-    });
-  }
+class TimerAddSheetContent extends StatelessWidget {
+  const TimerAddSheetContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isButtonEnabled = duration > 0;
-
-    return Scaffold(
+    final TimerEditorModel timerEditorModel = context.watch<TimerEditorModel>();
+    final isButtonEnabled = timerEditorModel.duration > 0;
+  
+      return Scaffold(
       appBar: AppBar(title: Text('Таймер', style: TextStyle(fontWeight: FontWeight.bold),),
       leading: IconButton(onPressed: Navigator.of(context).pop, icon: Icon(Icons.arrow_back, color: Colors.amber,)),
       actions: [
-            TextButton(onPressed: isButtonEnabled ? () async{
-                final uuid = Uuid();
-                final timer = TimerModel(id: uuid.v4(),duration: duration, createdAt: DateTime.now());
-                context.read<TimerPresentRepository>()
-                  ..addTimer(timer)
-                  ..runTimer(timer);
+            TextButton(onPressed: isButtonEnabled ? () {
+                final timer = timerEditorModel.getEditedTimer();
+                context.read<TimerManager>().createAndRunTimer(timer: timer, saveToDb: true);
                 Navigator.pop(context);
             } : null,
           child: Text('Запустить')),
       ],   
     ),
-    body: TimerCreationView(onTimeChanged: _onTimeChanged,),
+    body: Column(
+      children: [
+        TimerWheelPicker(onChanged: (int h, int min, int sec) {
+              final duration = h * 3600 + min * 60 + sec;
+              timerEditorModel.updateDuration(duration);
+            }),
+        TimerConfigurationPanel(
+          controller: timerEditorModel.labelTextController,
+        ),
+      ],
+    ),
     );
   }
+}
+
+void openTimerAddSheet(BuildContext context) {
+  showCupertinoModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (context) => const TimerAddSheetContent(),
+  );
 }

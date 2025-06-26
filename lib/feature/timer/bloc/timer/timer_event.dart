@@ -21,4 +21,9 @@ final class TimerResumed extends TimerEvent {
 class _TimerTicked extends TimerEvent {
   const _TimerTicked({required this.duration});
   final int duration;
+
+}
+
+class TimerReset extends TimerEvent{
+  const TimerReset();
 }

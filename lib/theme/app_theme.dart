@@ -6,8 +6,6 @@ class AppTheme {
       // Кастомизируем тёмную тему:
       colorScheme: ColorScheme.dark(
         primary: Colors.amber,
-        secondary: Colors.tealAccent[200]!,
-        surface: const Color(0xFF121212),
       ),
       scaffoldBackgroundColor: Colors.black,
       appBarTheme: AppBarTheme(
@@ -15,7 +13,7 @@ class AppTheme {
         backgroundColor: Colors.transparent,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: Colors.tealAccent[200],
+        backgroundColor: Colors.grey,
       ),
     );
   }
