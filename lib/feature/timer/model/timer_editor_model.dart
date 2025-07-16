@@ -4,20 +4,20 @@ import 'package:uuid/uuid.dart';
 
 
 class TimerEditorModel extends ChangeNotifier {
-  int _duration = 0;
+  Duration _duration = Duration.zero;
   final TextEditingController labelTextController = TextEditingController();
 
-  int get duration => _duration;
+  Duration get duration => _duration;
 
   String get label => labelTextController.text;
 
-  void updateDuration(int newDuration) {
+  void updateDuration(Duration newDuration) {
     _duration = newDuration;
     notifyListeners();
   }
 
   void clear() {
-    _duration = 0;
+    _duration = Duration.zero;
     labelTextController.clear();
     notifyListeners();
   }
@@ -28,7 +28,7 @@ class TimerEditorModel extends ChangeNotifier {
     return TimerModel(
       id: uuid.v4(),
       duration: _duration,
-      label: label.isEmpty ? _duration.toString() : label,
+      label: label,
       createdAt: DateTime.now(),
     );
   }

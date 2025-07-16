@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_timer_app/feature/timer/bloc/timer/timer_bloc.dart';
+import 'package:flutter_timer_app/feature/timer/state/bloc/timer/timer_bloc.dart';
 
 
 
@@ -27,7 +27,7 @@ class TimerRunPage extends StatelessWidget {
                 state is TimerInitial) {
               final duration = state.duration;
 
-              final progress = duration / maxDuration;
+              // final progress = duration / maxDuration;
 
               return Column(
                 children: [
@@ -41,7 +41,7 @@ class TimerRunPage extends StatelessWidget {
                       child: CircularProgressIndicator(
                         
                         strokeCap: StrokeCap.round,
-                        value: progress.clamp(0.0, 1.0),
+                        // value: progress.clamp(0.0, 1.0),
                         color: Colors.amber,
                         strokeWidth: 7,
                       ),

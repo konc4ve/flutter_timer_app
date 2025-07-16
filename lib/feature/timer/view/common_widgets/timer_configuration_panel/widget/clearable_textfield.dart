@@ -1,5 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 
 class ClearableTextField extends StatefulWidget {
   final String hintText;
@@ -19,8 +19,6 @@ class _ClearableTextFieldState extends State<ClearableTextField> {
   late final FocusNode _focusNode;
   bool _showClearButton = false;
 
- 
-
   @override
   void initState() {
     super.initState();
@@ -34,12 +32,11 @@ class _ClearableTextFieldState extends State<ClearableTextField> {
     final hasText = widget.controller.text.isNotEmpty;
     final hasFocus = _focusNode.hasFocus;
     final shouldShow = hasText && hasFocus;
-    
+
     if (_showClearButton != shouldShow) {
       setState(() => _showClearButton = shouldShow);
     }
   }
-
 
   @override
   void dispose() {
@@ -49,27 +46,37 @@ class _ClearableTextFieldState extends State<ClearableTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      child: TextField(
-        controller: widget.controller,
-        focusNode: _focusNode,
-        textAlign: TextAlign.end,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: widget.hintText,
-          suffixIcon: _showClearButton
-              ? IconButton(
-                  icon: const Icon(Icons.clear, size: 20),
-                  onPressed: () {
-                    widget.controller.clear();
-                    },
-                  padding: EdgeInsets.zero,
-                )
-              : null,
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: widget.controller,
+            focusNode: _focusNode,
+            cursorColor: CupertinoColors.activeOrange,
+            cursorWidth: 1.5,
+            cursorHeight: 25,
+            textAlign: TextAlign.end,
+            style: const TextStyle(color: Color.fromARGB(255, 167, 165, 165), fontSize: 16),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: widget.hintText,
+              hintStyle: TextStyle(fontSize: 17, color: const Color.fromARGB(255, 89, 89, 89)),
+            ),
+          ),
         ),
-      ),
+        if (_showClearButton)
+          GestureDetector(
+            onTap: () {
+              widget.controller.clear();
+            },
+            child: SizedBox(
+                width: 21,
+                child: Icon(
+                  CupertinoIcons.clear_thick_circled,
+                  color: const Color.fromARGB(255, 92, 92, 92),
+                )),
+          )
+      ],
     );
   }
 }
-

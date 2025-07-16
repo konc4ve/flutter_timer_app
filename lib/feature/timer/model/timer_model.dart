@@ -1,6 +1,6 @@
 class TimerModel {
   final String id;
-  final int duration;
+  final Duration duration;
   final String label;
   final DateTime createdAt;
 
@@ -11,19 +11,10 @@ class TimerModel {
     required this.createdAt
   });
 
-  String get formatedDuration {
-    final hour = duration ~/ 3600;
-    final min = (duration % 3600) ~/ 60;
-    final sec = duration % 60;
-    return '${hour.toString().padLeft(2, '0')}:'
-          '${min.toString().padLeft(2, '0')}:'
-          '${sec.toString().padLeft(2, '0')}';
-  }
-
   Map<String, Object?> toMap(){
     return {
       'id':id,
-      'duration': duration,
+      'duration': duration.inSeconds,
       'label': label,
       'createdAt': createdAt.toIso8601String(),
       };
@@ -32,9 +23,9 @@ class TimerModel {
   factory TimerModel.fromMap(Map<String, dynamic> map) {
   return TimerModel(
     id: map['id'].toString(),
-    duration : map['duration'] as int,
+    duration : Duration(seconds: map['duration'] as int),
     label: map['label'] as String,
-    createdAt: DateTime.parse(map['createdAt'] as String), // ISO8601
+    createdAt: DateTime.parse(map['createdAt'] as String), 
   );  
   }
 

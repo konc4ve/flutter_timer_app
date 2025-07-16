@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timer_app/feature/timer/repository/timer_manager.dart';
-import 'package:flutter_timer_app/feature/timer/timer_active_list_notifier.dart';
-import 'package:flutter_timer_app/feature/timer/timer_editor_model.dart';
+import 'package:flutter_timer_app/feature/timer/state/timer_active_list_notifier.dart';
+import 'package:flutter_timer_app/feature/timer/model/timer_editor_model.dart';
 
-import 'package:flutter_timer_app/feature/timer/timers_recent_list_notifier.dart';
-import 'package:flutter_timer_app/feature/timer/view/timer_list_page/timer_list_page.dart';
-import 'package:flutter_timer_app/feature/timer/timers_bloc_manager.dart';
-import 'package:flutter_timer_app/theme/app_theme.dart';
+import 'package:flutter_timer_app/feature/timer/state/timers_recent_list_notifier.dart';
+import 'package:flutter_timer_app/feature/timer/view/timer_home_page/timer_home_page.dart';
+import 'package:flutter_timer_app/feature/timer/state/timers_bloc_manager.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
@@ -23,9 +23,22 @@ class TimerApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GetIt.instance.get<TimerActiveListNotifier>()),
         ChangeNotifierProvider(create: (_) => GetIt.instance.get<TimerEditorModel>()),
       ],
-      child: MaterialApp(
-        theme: AppTheme.darkTheme,
-        home: TimerListPage(),
+      child: CupertinoApp(
+        supportedLocales: [
+          Locale('en'),
+          Locale('ru'), 
+        ],
+        locale: const Locale('ru', 'RU'),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        theme: CupertinoThemeData(
+          brightness: Brightness.dark,
+          textTheme: CupertinoTextThemeData(textStyle: TextStyle(decoration: TextDecoration.none))
+        ),
+        home: TimerHomePage(),
       ),
     );
   }
