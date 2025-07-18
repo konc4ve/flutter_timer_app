@@ -70,7 +70,7 @@ class TimerListTile extends StatelessWidget {
                       builder: (context, state) {
                         if (state is TimerRunInProgress) {
                           return ActiveTimerControlButton(
-                              duration: timer.duration,
+                              animationDuration: timer.duration,
                               controlType: ActiveTimerControlType.pause,
                               onTap: () {
                                 timerBloc!.add(TimerPaused());
@@ -78,7 +78,7 @@ class TimerListTile extends StatelessWidget {
                         }
                         if (state is TimerRunPause) {
                           return ActiveTimerControlButton(
-                              duration: timer.duration,
+                              animationDuration: timer.duration,
                               controlType: ActiveTimerControlType.run,
                               onTap: () {
                                 timerBloc!.add(TimerStarted(
@@ -87,13 +87,12 @@ class TimerListTile extends StatelessWidget {
                         }
                         if (state is TimerInitial) {
                           return ActiveTimerControlButton(
-                              duration: timer.duration,
+                              animationDuration: timer.duration,
                               controlType: ActiveTimerControlType.run,
                               onTap: () {
                                 timerBloc!.add(TimerStarted(
                                   duration: timerBloc.initDuration,
                                 ));
-                                // controller.forward();
                               });
                         }
                         return SizedBox.shrink();

@@ -19,6 +19,3 @@ class _TimerTicked extends TimerEvent {
 
 }
 
-class TimerReset extends TimerEvent{
-  const TimerReset();
-}

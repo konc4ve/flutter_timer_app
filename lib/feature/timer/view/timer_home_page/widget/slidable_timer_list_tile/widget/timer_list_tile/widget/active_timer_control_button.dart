@@ -6,12 +6,12 @@ enum ActiveTimerControlType { pause, run }
 
 
 class ActiveTimerControlButton extends StatefulWidget {
-  final Duration duration;
+  final Duration animationDuration;
   final ActiveTimerControlType controlType;
   final VoidCallback onTap;
 
   const ActiveTimerControlButton({
-    required this.duration,
+    required this.animationDuration,
     required this.controlType,
     required this.onTap,
     super.key,
@@ -31,33 +31,31 @@ class _ActiveTimerControlButtonState extends State<ActiveTimerControlButton>
 
     _controller = AnimationController(
       vsync: this,
-      duration: widget.duration,
+      duration: widget.animationDuration,
     );
 
-    // Автостарт, если тип "run"
     if (widget.controlType == ActiveTimerControlType.pause) {
       _controller.forward(from: 0);
     }
   }
 
-  @override
-  void didUpdateWidget(covariant ActiveTimerControlButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  // @override
+  // void didUpdateWidget(covariant ActiveTimerControlButton oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
 
-    // Если изменился режим или duration — переинициализируем
-    if (oldWidget.controlType != widget.controlType ||
-        oldWidget.duration != widget.duration) {
-      _controller.duration = widget.duration;
+  //   if (oldWidget.controlType != widget.controlType ||
+  //       oldWidget.animationDuration != widget.animationDuration) {
+  //     _controller.duration = widget.animationDuration;
 
-      if (widget.controlType == ActiveTimerControlType.run) {
-        if (!_controller.isAnimating) {
-          _controller.stop();
-        }
-      } else {
-        _controller.forward();
-      }
-    }
-  }
+  //     if (widget.controlType == ActiveTimerControlType.run) {
+  //       if (!_controller.isAnimating) {
+  //         _controller.stop();
+  //       }
+  //     } else {
+  //       _controller.forward();
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {
