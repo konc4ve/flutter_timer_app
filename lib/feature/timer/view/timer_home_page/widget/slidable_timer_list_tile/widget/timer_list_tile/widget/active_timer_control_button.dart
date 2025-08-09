@@ -39,23 +39,6 @@ class _ActiveTimerControlButtonState extends State<ActiveTimerControlButton>
     }
   }
 
-  // @override
-  // void didUpdateWidget(covariant ActiveTimerControlButton oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-
-  //   if (oldWidget.controlType != widget.controlType ||
-  //       oldWidget.animationDuration != widget.animationDuration) {
-  //     _controller.duration = widget.animationDuration;
-
-  //     if (widget.controlType == ActiveTimerControlType.run) {
-  //       if (!_controller.isAnimating) {
-  //         _controller.stop();
-  //       }
-  //     } else {
-  //       _controller.forward();
-  //     }
-  //   }
-  // }
 
   @override
   void dispose() {

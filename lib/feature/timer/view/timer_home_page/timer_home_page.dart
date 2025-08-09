@@ -43,9 +43,9 @@ class _TimerHomePageState extends State<TimerHomePage> {
     final timersRecentNotifier = context.watch<TimerRecentListNotifier>();
     final timersActiveNotifier = context.watch<TimerActiveListNotifier>();
 
-    final runningTimers = timersActiveNotifier.activeTimers.reversed.toList();
+    final runningTimers = timersActiveNotifier.activeTimers;
 
-    final recentTimers = timersRecentNotifier.timersList.reversed.toList();
+    final recentTimers = timersRecentNotifier.timersList;
 
     (runningTimers.isEmpty)
         ? mode = TimerListPageMode.timerRunElements

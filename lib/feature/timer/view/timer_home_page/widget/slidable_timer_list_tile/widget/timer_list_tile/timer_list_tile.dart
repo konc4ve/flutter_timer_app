@@ -33,17 +33,6 @@ class TimerListTile extends StatelessWidget {
         final isClosed = value == 0.0;
         return CupertinoListTile(
             padding: EdgeInsets.only(top: 5, bottom: 5),
-            // onTap: (type == TimerType.active)
-            //     ? () {
-            //         () => Navigator.push(
-            //             context,
-            //             MaterialPageRoute(
-            //                 builder: (context) => BlocProvider.value(
-            //                       value: timerBloc!,
-            //                       // child: TimerRunPage(maxDuration: timerBloc!.initDuration,),
-            //                     )));
-            //       }
-            //     : null,
             title: (type == TimerType.active)
                 ? Text(
                     timerManager.formatedDuration(timerBloc!.state.duration,
