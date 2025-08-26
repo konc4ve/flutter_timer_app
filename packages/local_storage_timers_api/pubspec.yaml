@@ -1,0 +1,21 @@
+name: local_storage_timers_api
+description: "A new Flutter package project."
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  rxdart: ^0.28.0
+  shared_preferences: ^2.5.3
+  flutter:
+    sdk: flutter
+  timers_api:
+    path: ../timers_api
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+

@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,10 +28,16 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  shared_preferences: ^2.5.3
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0  
-
+  timers_api:
+    path: packages/timers_api
+  local_storage_timers_api:
+    path: packages/local_storage_timers_api 
+  timers_repository:
+    path: packages/timers_repository
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -44,12 +50,16 @@ dependencies:
   modal_bottom_sheet: ^3.0.0
   flutter_localizations:
     sdk: flutter
-  flutter_slidable: ^4.0.0
+  flutter_slidable: ^4.0.1
+  stop_watch_timer: ^3.2.2
+  rxdart: ^0.28.0
+  json_annotation: ^4.6.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  json_serializable: ^6.11.0
+  build_runner: ^2.7.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
