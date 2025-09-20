@@ -24,6 +24,7 @@ class EditTimerBloc extends Bloc<EditTimerEvent, EditTimerState> {
     on<EditTimerDurationChanged>(_onDurationChanged);
     on<EditTimerLabelChanged>(_onLabelChanged);
     on<EditTimerSubmitted>(_onSubmitted);
+    on<EditTimerReset>(_onReset);
   }
 
   final RecentTimersOverviewRepository _recentTimersOverviewRepository;
@@ -35,6 +36,10 @@ class EditTimerBloc extends Bloc<EditTimerEvent, EditTimerState> {
     Emitter<EditTimerState> emit,
   ) {
     emit(state.copyWith(duration: event.duration));
+  }
+
+  void _onReset(EditTimerReset event, Emitter<EditTimerState> emit) {
+    emit(state.copyWith(duration: Duration.zero, label: ''));
   }
 
   void _onLabelChanged(
@@ -49,32 +54,38 @@ class EditTimerBloc extends Bloc<EditTimerEvent, EditTimerState> {
     Emitter<EditTimerState> emit,
   ) async {
     emit(state.copyWith(status: EditTimerStatus.loading));
-    final timer =
-        state.initialTimer ??
-        EditTimer(
-          duration: Duration.zero,
-        ).copyWith(duration: state.duration, label: state.label);
 
     try {
-      await _activeTimersOverviewRepository.saveActiveTimer(
-        ActiveTimer.fromEdit(timer),
-      );
+      if (state.initialTimer != null) {
+        final updatedTimer = state.initialTimer!.copyWith(
+          duration: state.duration,
+          label: state.label,
+        );
+        await _activeTimersOverviewRepository.upDateActiveTimer(
+          ActiveTimer.fromEdit(updatedTimer),
+        );
+      } else {
+        final timer = EditTimer(duration: state.duration, label: state.label);
+        final recentTimers = await _recentTimersOverviewRepository
+            .getRecentTimers()
+            .first;
 
-      final recentTimers = await _recentTimersOverviewRepository
-          .getRecentTimers()
-          .first;
+        final isDuplicate = recentTimers.any(
+          (t) => t.duration == timer.duration && t.label == timer.label,
+        );
 
-      final isDuplicate = recentTimers.any(
-        (t) => t.duration == timer.duration && t.label == timer.label
-      );
-
-      if (isDuplicate) {
-        emit(state.copyWith(status: EditTimerStatus.duplicate));
-        return;
+        if (isDuplicate) {
+          emit(state.copyWith(status: EditTimerStatus.duplicate));
+          return;
+        }
+        await _recentTimersOverviewRepository.saveRecentTimer(
+          RecentTimer.fromEdit(timer),
+        );
+        await _activeTimersOverviewRepository.saveActiveTimer(
+          ActiveTimer.fromEdit(timer),
+        );
       }
-      await _recentTimersOverviewRepository.saveRecentTimer(
-        RecentTimer.fromEdit(timer),
-      );
+
       emit(state.copyWith(status: EditTimerStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTimerStatus.failture));

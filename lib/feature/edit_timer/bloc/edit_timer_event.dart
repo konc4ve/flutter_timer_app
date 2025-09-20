@@ -34,4 +34,13 @@ final class EditTimerSubmitted extends EditTimerEvent {
 
 }
 
+final class EditTimerReset extends EditTimerEvent {
+
+  const EditTimerReset();
+
+    @override
+  List<Object> get props => []; 
+
+}
+
 

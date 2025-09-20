@@ -3,43 +3,49 @@ import 'package:flutter_timer_app/feature/edit_timer/models/models.dart';
 import 'package:flutter_timer_app/feature/recent_timers_overview/recent_timers_overview.dart';
 import 'package:uuid/uuid.dart';
 
-class ActiveTimer extends Equatable{
+class ActiveTimer extends Equatable {
   ActiveTimer({
-    required this.remainingDuration,
+    required this.remainDuration,
+    String? id,
+    required this.duration,
     this.label = '',
-  });  
+  }) : id = id ?? Uuid().v4();
 
-  final String id = Uuid().v4();
-  final Duration remainingDuration;
+  final String id;
+  final Duration duration;
   final String label;
-
+  final Duration remainDuration;
 
   factory ActiveTimer.fromRecent(RecentTimer timer) {
     return ActiveTimer(
-      remainingDuration: timer.duration,
+      duration: timer.duration,
       label: timer.label,
-      );
+      remainDuration: timer.duration,
+    );
   }
 
   factory ActiveTimer.fromEdit(EditTimer timer) {
     return ActiveTimer(
-      remainingDuration: timer.duration,
+      remainDuration: timer.duration,
+      id: timer.id,
+      duration: timer.duration,
       label: timer.label,
-      );
+    );
   }
 
   @override
-  List<Object?> get props => [id, remainingDuration, label];
+  List<Object?> get props => [id, duration, label, remainDuration];
 
-
-    ActiveTimer copyWith({
+  ActiveTimer copyWith({
+    Duration? remainDuration,
     String? id,
     String? label,
-    Duration? remainingDuration,
+    Duration? duration,
   }) {
     return ActiveTimer(
+      remainDuration: remainDuration ?? this.remainDuration,
       label: label ?? this.label,
-      remainingDuration: remainingDuration ?? this.remainingDuration,
-      );
+      duration: duration ?? this.duration,
+    );
   }
 }

@@ -6,6 +6,8 @@ abstract interface class ActiveTimersOverviewRepository {
 
   Future<void> saveActiveTimer(ActiveTimer timer);
 
+  Future<void> upDateActiveTimer(ActiveTimer updatedTimer);
+
   Future<void> deleteActiveTimer(String id);
 
   Future<void> dispose();
@@ -14,8 +16,8 @@ abstract interface class ActiveTimersOverviewRepository {
 class ActiveTimersOverviewRepositoryImpl
     implements ActiveTimersOverviewRepository {
   ActiveTimersOverviewRepositoryImpl(
-      ActiveTimersOverviewDataProvider dataProvider)
-      : _activeTimersOverviewDataProvider = dataProvider;
+    ActiveTimersOverviewDataProvider dataProvider,
+  ) : _activeTimersOverviewDataProvider = dataProvider;
 
   final ActiveTimersOverviewDataProvider _activeTimersOverviewDataProvider;
 
@@ -33,7 +35,10 @@ class ActiveTimersOverviewRepositoryImpl
 
   @override
   Future<void> dispose() => _activeTimersOverviewDataProvider.close();
-  
+
+  @override
+  Future<void> upDateActiveTimer(ActiveTimer updatedTimer) =>
+      _activeTimersOverviewDataProvider.upDateActiveTimer(updatedTimer);
 }
 
 class ActiveTimerNotFoundException implements Exception {}

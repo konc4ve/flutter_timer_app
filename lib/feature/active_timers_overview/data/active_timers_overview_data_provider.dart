@@ -7,20 +7,24 @@ abstract interface class ActiveTimersOverviewDataProvider {
 
   Future<void> saveActiveTimer(ActiveTimer timer);
 
+  Future<void> upDateActiveTimer(ActiveTimer updatedTimer);
+
   Future<void> deleteActiveTimer(String id);
 
   Future<void> close();
 }
 
-class ActiveTimersOverviewDataProviderImpl implements ActiveTimersOverviewDataProvider {
+class ActiveTimersOverviewDataProviderImpl
+    implements ActiveTimersOverviewDataProvider {
   ActiveTimersOverviewDataProviderImpl();
 
   @override
   Stream<List<ActiveTimer>> getActiveTimers() =>
       _timerStreamController.asBroadcastStream();
 
-  final _timerStreamController =
-      BehaviorSubject<List<ActiveTimer>>.seeded(const []);
+  final _timerStreamController = BehaviorSubject<List<ActiveTimer>>.seeded(
+    const [],
+  );
 
   @override
   Future<void> deleteActiveTimer(String id) async {
@@ -35,7 +39,7 @@ class ActiveTimersOverviewDataProviderImpl implements ActiveTimersOverviewDataPr
   }
 
   @override
-  Future<void> saveActiveTimer(ActiveTimer timer) async{
+  Future<void> saveActiveTimer(ActiveTimer timer) async {
     final timers = [..._timerStreamController.value];
     final timerIndex = timers.indexWhere((t) => t.id == timer.id);
     if (timerIndex >= 0) {
@@ -49,5 +53,17 @@ class ActiveTimersOverviewDataProviderImpl implements ActiveTimersOverviewDataPr
   @override
   Future<void> close() {
     return _timerStreamController.close();
+  }
+
+  @override
+  Future<void> upDateActiveTimer(ActiveTimer updatedTimer) async {
+    final timers = [..._timerStreamController.value];
+    final index = timers.indexWhere((t) => t.id == updatedTimer.id);
+    if (index != -1) {
+      timers[index] = updatedTimer;
+      _timerStreamController.value = timers;
+    } else {
+      throw ActiveTimerNotFoundException();
+    }
   }
 }

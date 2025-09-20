@@ -37,6 +37,6 @@ final class EditTimerState extends Equatable {
   }
 
   @override
-  List<Object> get props => [label, duration];
+  List<Object> get props => [label, duration, status];
 }
 

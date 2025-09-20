@@ -31,7 +31,7 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.0  
+  flutter_bloc: ^9.1.1  
   timers_api:
     path: packages/timers_api
   local_storage_timers_api:
@@ -54,6 +54,7 @@ dependencies:
   stop_watch_timer: ^3.2.2
   rxdart: ^0.28.0
   json_annotation: ^4.6.0
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timer_app/feature/active_timers_overview/active_timers_overview.dart';
+import 'package:flutter_timer_app/feature/edit_timer/edit_timer.dart';
 
 import 'package:flutter_timer_app/feature/recent_timers_overview/recent_timers_overview.dart';
 import 'package:flutter_timer_app/screens/timers_overview_screen.dart';
@@ -41,17 +42,32 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      supportedLocales: [Locale('en'), Locale('ru')],
-
-      locale: const Locale('ru', 'RU'),
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => RecentTimersOverviewBloc(
+            resentTimersRepository: context
+                .read<RecentTimersOverviewRepository>(),
+          )..add(RecentTimersOverviewSubscriptionRequested()),
+        ),
+        BlocProvider(
+          create: (context) => ActiveTimersOverviewBloc(
+            context.read<ActiveTimersOverviewRepository>(),
+          )..add(ActiveTimersOverviewSubscriptionRequested()),
+        ),
       ],
-      theme: TimersTheme.dark,
-      home: const TimersOverviewScreen(),
+      child: CupertinoApp(
+        supportedLocales: [Locale('en'), Locale('ru')],
+
+        locale: const Locale('ru', 'RU'),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        theme: TimersTheme.dark,
+        home: const TimersOverviewScreen(),
+      ),
     );
   }
 }

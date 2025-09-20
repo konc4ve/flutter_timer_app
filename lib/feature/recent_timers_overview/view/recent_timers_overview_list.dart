@@ -3,35 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_timer_app/common/common.dart';
 import 'package:flutter_timer_app/feature/recent_timer_overview/view/view.dart';
 import 'package:flutter_timer_app/feature/recent_timers_overview/bloc/recent_timers_overview_bloc.dart';
-import 'package:flutter_timer_app/feature/recent_timers_overview/data/recent_timers_overview_repository.dart';
+import 'package:flutter_timer_app/theme/theme.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
-class RecentTimersOverviewList extends StatelessWidget {
-  const RecentTimersOverviewList({super.key});
+class RecentTimersOverviewListView extends StatelessWidget {
+  const RecentTimersOverviewListView({this.onAction, super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RecentTimersOverviewBloc(
-        resentTimersRepository: context.read<RecentTimersOverviewRepository>(),
-      )..add(RecentTimersOverviewSubscriptionRequested()),
-      child: RecentTimersOveviewListView(),
-    );
-  }
-}
-
-class RecentTimersOveviewListView extends StatefulWidget {
-  const RecentTimersOveviewListView({super.key});
-
-  @override
-  State<RecentTimersOveviewListView> createState() =>
-      _RecentTimersOveviewListViewState();
-}
-
-class _RecentTimersOveviewListViewState
-    extends State<RecentTimersOveviewListView> {
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
+    final theme = CupertinoTheme.of(context);
     return BlocBuilder<RecentTimersOverviewBloc, RecentTimersOverviewState>(
       builder: (context, state) {
         if (state.status == RecentTimersOverviewStatus.loading) {
@@ -39,20 +21,50 @@ class _RecentTimersOveviewListViewState
             child: Center(child: CupertinoActivityIndicator()),
           );
         }
-        return SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            final timer = state.recentTimers[index];
-            return SlidableWrapper(
-              onPressed: (context) => context.read<RecentTimersOverviewBloc>().add(
-                RecentTimersOverviewTimerDeleted(timer: timer),
-              ),
-              onDismissed: () => context.read<RecentTimersOverviewBloc>().add(
-                RecentTimersOverviewTimerDeleted(timer: timer),
-              ),
-              widget: RecentTimerOverviewTile(timer: timer,),
-              valueKey: ValueKey(timer.id),
-            );
-          }, childCount: state.recentTimers.length),
+        return MultiSliver(
+          children: [
+            state.recentTimers.isNotEmpty
+                ? SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Недавние',
+                        style: theme.textTheme.actionSmallTextStyle,
+                      ),
+                    ),
+                  )
+                : SizedBox(),
+            SliverToBoxAdapter(child: SizedBox(height: 5)),
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final timer = state.recentTimers[index];
+                return SlidableWrapper(
+                  onPressed: (context) {
+                    context.read<RecentTimersOverviewBloc>().add(
+                      RecentTimersOverviewTimerDeleted(timer: timer),
+                    );
+                  },
+                  onDismissed: () => context
+                      .read<RecentTimersOverviewBloc>()
+                      .add(RecentTimersOverviewTimerDeleted(timer: timer)),
+                  widget: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Column(
+                      children: [
+                        (index == 0) ? TimersTheme.tileDivider : SizedBox(),
+                        RecentTimerOverviewTile(
+                          onAction: onAction,
+                          timer: timer,
+                        ),
+                        TimersTheme.tileDivider,
+                      ],
+                    ),
+                  ),
+                  valueKey: ValueKey(timer.id),
+                );
+              }, childCount: state.recentTimers.length),
+            ),
+          ],
         );
       },
     );
